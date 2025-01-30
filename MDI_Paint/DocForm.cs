@@ -36,7 +36,7 @@ namespace MDI_Paint
             if (e.Button == MouseButtons.Left)
             {
                 var graphics =  Graphics.FromImage(bitmap);
-                graphics.DrawLine(new Pen(MainForm.currentColor), oldX, oldY, e.X, e.Y);
+                graphics.DrawLine(new Pen(MainForm.currentColor, MainForm.currentPenSize), oldX, oldY, e.X, e.Y);
                 oldY = e.Y;
                 oldX = e.X;
 

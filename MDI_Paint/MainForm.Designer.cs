@@ -42,6 +42,11 @@
             this.toYellowButton = new System.Windows.Forms.ToolStripButton();
             this.toBlueButton = new System.Windows.Forms.ToolStripButton();
             this.toBlackButton = new System.Windows.Forms.ToolStripButton();
+            this.chooseColor = new System.Windows.Forms.ToolStripButton();
+            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.pxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pxToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.pxToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -71,11 +76,12 @@
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(109, 6);
             // 
             // новыйToolStripMenuItem
             // 
             this.новыйToolStripMenuItem.Name = "новыйToolStripMenuItem";
+            this.новыйToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.новыйToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.новыйToolStripMenuItem.Text = "Новый";
             this.новыйToolStripMenuItem.Click += new System.EventHandler(this.новыйToolStripMenuItem_Click);
@@ -83,11 +89,12 @@
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(109, 6);
             // 
             // выходToolStripMenuItem
             // 
             this.выходToolStripMenuItem.Name = "выходToolStripMenuItem";
+            this.выходToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
             this.выходToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.выходToolStripMenuItem.Text = "Выход";
             this.выходToolStripMenuItem.Click += new System.EventHandler(this.выходToolStripMenuItem_Click);
@@ -103,7 +110,8 @@
             // оПрограммеToolStripMenuItem
             // 
             this.оПрограммеToolStripMenuItem.Name = "оПрограммеToolStripMenuItem";
-            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+            this.оПрограммеToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
+            this.оПрограммеToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
             this.оПрограммеToolStripMenuItem.Text = "О программе...";
             this.оПрограммеToolStripMenuItem.Click += new System.EventHandler(this.оПрограммеToolStripMenuItem_Click);
             // 
@@ -113,7 +121,9 @@
             this.toRedButton,
             this.toYellowButton,
             this.toBlueButton,
-            this.toBlackButton});
+            this.toBlackButton,
+            this.chooseColor,
+            this.toolStripDropDownButton1});
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(800, 25);
@@ -160,6 +170,50 @@
             this.toBlackButton.Text = "toolStripButton4";
             this.toBlackButton.Click += new System.EventHandler(this.toBlackButton_Click);
             // 
+            // chooseColor
+            // 
+            this.chooseColor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.chooseColor.Image = ((System.Drawing.Image)(resources.GetObject("chooseColor.Image")));
+            this.chooseColor.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.chooseColor.Name = "chooseColor";
+            this.chooseColor.Size = new System.Drawing.Size(23, 22);
+            this.chooseColor.Text = "toolStripButton1";
+            this.chooseColor.Click += new System.EventHandler(this.toolStripButton1_Click);
+            // 
+            // toolStripDropDownButton1
+            // 
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.pxToolStripMenuItem,
+            this.pxToolStripMenuItem1,
+            this.pxToolStripMenuItem2});
+            this.toolStripDropDownButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButton1.Image")));
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(29, 22);
+            this.toolStripDropDownButton1.Text = "toolStripDropDownButton1";
+            // 
+            // pxToolStripMenuItem
+            // 
+            this.pxToolStripMenuItem.Name = "pxToolStripMenuItem";
+            this.pxToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pxToolStripMenuItem.Text = "1px";
+            this.pxToolStripMenuItem.Click += new System.EventHandler(this.pxToolStripMenuItem_Click);
+            // 
+            // pxToolStripMenuItem1
+            // 
+            this.pxToolStripMenuItem1.Name = "pxToolStripMenuItem1";
+            this.pxToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.pxToolStripMenuItem1.Text = "5px";
+            this.pxToolStripMenuItem1.Click += new System.EventHandler(this.pxToolStripMenuItem1_Click);
+            // 
+            // pxToolStripMenuItem2
+            // 
+            this.pxToolStripMenuItem2.Name = "pxToolStripMenuItem2";
+            this.pxToolStripMenuItem2.Size = new System.Drawing.Size(180, 22);
+            this.pxToolStripMenuItem2.Text = "10px";
+            this.pxToolStripMenuItem2.Click += new System.EventHandler(this.pxToolStripMenuItem2_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -196,6 +250,11 @@
         private System.Windows.Forms.ToolStripButton toYellowButton;
         private System.Windows.Forms.ToolStripButton toBlueButton;
         private System.Windows.Forms.ToolStripButton toBlackButton;
+        private System.Windows.Forms.ToolStripButton chooseColor;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
+        private System.Windows.Forms.ToolStripMenuItem pxToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pxToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem pxToolStripMenuItem2;
     }
 }
 

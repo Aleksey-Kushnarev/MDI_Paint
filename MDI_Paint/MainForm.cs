@@ -13,6 +13,7 @@ namespace MDI_Paint
     public partial class MainForm : Form
     {
         public static Color currentColor = Color.Black;
+        public static float currentPenSize = 1f;
         public MainForm()
         {
             InitializeComponent();
@@ -59,6 +60,30 @@ namespace MDI_Paint
         private void toBlackButton_Click(object sender, EventArgs e)
         {
             currentColor= Color.Black;
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            var colorDialog = new ColorDialog();
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                currentColor = colorDialog.Color;
+            }
+        }
+
+        private void pxToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            currentPenSize = 1f;
+        }
+
+        private void pxToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            currentPenSize = 5f;
+        }
+
+        private void pxToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            currentPenSize = 10f;
         }
     }
 }
