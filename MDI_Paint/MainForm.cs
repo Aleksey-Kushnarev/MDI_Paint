@@ -14,6 +14,8 @@ namespace MDI_Paint
     {
         public static Color currentColor = Color.Black;
         public static float currentPenSize = 1f;
+        public static int standartWidth = 200;
+        public static int standartHeight = 200;
         public MainForm()
         {
             InitializeComponent();
@@ -84,6 +86,41 @@ namespace MDI_Paint
         private void pxToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             currentPenSize = 10f;
+        }
+
+        private bool ValidatePosInt(int? value)
+        {
+            if (value != null) {
+                if( value > 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void размерХолстаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var resizeWindow = new CanvasSizeForm(); 
+            if (resizeWindow.ShowDialog() == DialogResult.OK)
+            {
+                int width = CanvasSizeForm.ResizeWidth;
+                int height = CanvasSizeForm.ResizeHeight;
+                var activeChild = ActiveMdiChild;
+                if (activeChild == null)
+                    MessageBox.Show();
+                if (ValidatePosInt(width) && ValidatePosInt(height))
+                {
+                    var Child = l;
+                    //Resize()
+                }
+            }
+
+        }
+       
+        private void рисунокToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+                размерХолстаToolStripMenuItem.Enabled = !(ActiveMdiChild == null);
+            
         }
     }
 }

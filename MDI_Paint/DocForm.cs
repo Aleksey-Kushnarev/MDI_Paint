@@ -21,7 +21,7 @@ namespace MDI_Paint
         public DocForm()
         {
             InitializeComponent();
-            bitmap = new Bitmap(this.Width, this.Height);
+            bitmap = new Bitmap(MainForm.standartWidth, MainForm.standartHeight);
         }
 
         private void DocForm_MouseDown(object sender, MouseEventArgs e)
@@ -42,7 +42,7 @@ namespace MDI_Paint
 
                 Invalidate();
             }
-        }
+        
 
         protected override void OnPaint(PaintEventArgs e)
         {
