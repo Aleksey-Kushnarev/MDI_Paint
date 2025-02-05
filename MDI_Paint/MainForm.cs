@@ -13,9 +13,8 @@ namespace MDI_Paint
     public partial class MainForm : Form
     {
         public static Color currentColor = Color.Black;
-        public static float currentPenSize = 1f;
-        public static int standartWidth = 200;
-        public static int standartHeight = 200;
+        public static Tool currentTool = Tool.Pen;
+        public static int currentPenSize = 1;
         public MainForm()
         {
             InitializeComponent();
@@ -75,17 +74,17 @@ namespace MDI_Paint
 
         private void pxToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            currentPenSize = 1f;
+            currentPenSize = 1;
         }
 
         private void pxToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            currentPenSize = 5f;
+            currentPenSize = 5;
         }
 
         private void pxToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            currentPenSize = 10f;
+            currentPenSize = 10;
         }
 
         private bool ValidatePosInt(int? value)
@@ -107,11 +106,17 @@ namespace MDI_Paint
                 int height = CanvasSizeForm.ResizeHeight;
                 var activeChild = ActiveMdiChild;
                 if (activeChild == null)
-                    MessageBox.Show();
+                {
+                    MessageBox.Show("Не выбрано окно");
+                    return;
+                }
                 if (ValidatePosInt(width) && ValidatePosInt(height))
                 {
-                    var Child = l;
-                    //Resize()
+                    if (activeChild is DocForm docForm) 
+                    {
+                        docForm.Width = width;
+                        docForm.Height = height;
+                    }
                 }
             }
 
@@ -121,6 +126,91 @@ namespace MDI_Paint
         {
                 размерХолстаToolStripMenuItem.Enabled = !(ActiveMdiChild == null);
             
+        }
+
+        private void brushButton_Click(object sender, EventArgs e)
+        {
+            currentTool = Tool.Pen;
+        }
+
+        private void eraserButton_Click(object sender, EventArgs e)
+        {
+            currentTool = Tool.Eraser;
+        }
+
+        private void сохранитьКакToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var d = ActiveMdiChild as DocForm;
+
+            if (d != null)
+            {
+                var dlg = new SaveFileDialog();
+                dlg.Filter = "PNG Image (*.png)|*.png|JPEG Image (*.jpg, *.jpeg)|*.jpg;*.jpeg|BMP Image (*.bmp)|*.bmp|All Files (*.*)|*.*";
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    d.SaveAs(dlg.FileName);
+                }
+            }
+        }
+
+        private void файлToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            сохранитьКакToolStripMenuItem.Enabled= !(ActiveMdiChild == null);
+
+            сохранитьToolStripMenuItem.Enabled = !(ActiveMdiChild == null);
+        }
+            
+        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var d = ActiveMdiChild as DocForm;
+
+            if (d != null)
+            {
+                if (string.IsNullOrEmpty(d.FilePath))
+                {
+                    сохранитьКакToolStripMenuItem_Click(sender, e);
+                }
+                else
+                {
+                    d.SaveAs(d.FilePath);
+                }
+            }
+        }
+
+        private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var dlg = new OpenFileDialog();
+
+            dlg.Filter = "JPEG Image (*.jpg; *.jpeg)|*.jpg;*.jpeg|BMP Image (*.bmp)|*.bmp|All Files (*.*)|*.*";
+
+            if (dlg.ShowDialog() == DialogResult.OK)
+            { 
+                    var newDoc = new DocForm();
+                    newDoc.LoadImage(dlg.FileName);
+                    newDoc.MdiParent = this;
+                    newDoc.Show();
+                
+            }
+        }
+
+        private void zoomPlus_Click(object sender, EventArgs e)
+        {
+
+            var d = ActiveMdiChild as DocForm;
+            if (d != null && d.zoomFactor > 0.1f)
+            {
+                d.SetZoom(d.zoomFactor * 1.2f); // Увеличиваем на 20%
+            }
+        }
+
+        private void zoomMinus_Click(object sender, EventArgs e)
+        {
+            var d = ActiveMdiChild as DocForm;
+            if (d != null && d.zoomFactor > 0.1f)
+            {
+                d.SetZoom(d.zoomFactor / 1.2f); // Уменьшаем на 20%
+            }
+
         }
     }
 }
