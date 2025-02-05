@@ -19,11 +19,15 @@ namespace MDI_Paint
         /// <summary>
         /// Примоугольник
         /// </summary>
-        Rectanle,
+        Rectangle,
         /// <summary>
         /// Ластик
         /// </summary>
-        Eraser
+        Eraser,
+        Fill,
+        Smiley,
+        Text
+
 
     }
 }

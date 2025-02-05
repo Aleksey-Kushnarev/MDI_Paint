@@ -155,12 +155,13 @@ namespace MDI_Paint
 
         private void файлToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
-            сохранитьКакToolStripMenuItem.Enabled= !(ActiveMdiChild == null);
+            var dc = ActiveMdiChild as DocForm;
+            сохранитьКакToolStripMenuItem.Enabled= !(dc == null || !dc.isModified);
 
-            сохранитьToolStripMenuItem.Enabled = !(ActiveMdiChild == null);
+            сохранитьToolStripMenuItem.Enabled = !(dc == null || !dc.isModified);
         }
             
-        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        public void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var d = ActiveMdiChild as DocForm;
 
@@ -197,7 +198,7 @@ namespace MDI_Paint
         {
 
             var d = ActiveMdiChild as DocForm;
-            if (d != null && d.zoomFactor > 0.1f)
+            if (d != null && d.zoomFactor > 0.1f && d.zoomFactor < 2.5)
             {
                 d.SetZoom(d.zoomFactor * 1.2f); // Увеличиваем на 20%
             }
@@ -206,11 +207,65 @@ namespace MDI_Paint
         private void zoomMinus_Click(object sender, EventArgs e)
         {
             var d = ActiveMdiChild as DocForm;
-            if (d != null && d.zoomFactor > 0.1f)
+            if (d != null && d.zoomFactor > 0.5f && d.zoomFactor < 2.5)
             {
                 d.SetZoom(d.zoomFactor / 1.2f); // Уменьшаем на 20%
             }
 
+        }
+
+        private void circle_Click(object sender, EventArgs e)
+        {
+            currentTool = Tool.Circle;
+            var activeChild = ActiveMdiChild as DocForm;
+            if (activeChild != null)
+            {
+                activeChild.CancelDrawing(); // Отменяем незавершенное рисование
+            }
+        }
+
+        private void rectangle_Click(object sender, EventArgs e)
+        {
+            currentTool = Tool.Rectangle;
+            var activeChild = ActiveMdiChild as DocForm;
+            if (activeChild != null)
+            {
+                activeChild.CancelDrawing(); // Отменяем незавершенное рисование
+            }
+        }
+
+        private void toolStripButton1_Click_1(object sender, EventArgs e)
+        {
+            currentTool = Tool.Fill;
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            currentTool = Tool.Smiley;
+            
+            var activeChild = ActiveMdiChild as DocForm;
+            activeChild.isFilled = true;
+            if (activeChild != null)
+            {
+                activeChild.CancelDrawing(); // Отменяем незавершенное рисование
+            }
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            currentTool = Tool.Smiley;
+
+            var activeChild = ActiveMdiChild as DocForm;
+            activeChild.isFilled = false;
+            if (activeChild != null)
+            {
+                activeChild.CancelDrawing(); // Отменяем незавершенное рисование
+            }
+        }
+
+        private void toolStripButton4_Click(object sender, EventArgs e)
+        {
+            currentTool = Tool.Text;
         }
     }
 }
