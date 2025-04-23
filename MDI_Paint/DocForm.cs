@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PluginInterface;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -269,6 +270,16 @@ namespace MDI_Paint
 
                 Invalidate(); // Перерисовываем холст
             }
+        }
+
+        public void ApplyFilter(IPlugin plugin)
+        {
+            if (bitmap == null || plugin == null) return;
+
+            plugin.Apply(bitmap);   // Изменяет изображение
+            Invalidate();           // Обновляем отображение
+            isModified = true;
+            Refresh();
         }
 
         private void FillArea(Point point, Color newColor)

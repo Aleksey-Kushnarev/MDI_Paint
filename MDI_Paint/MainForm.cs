@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PluginInterface;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,6 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.Reflection;
+using System.IO;
+
 namespace MDI_Paint
 {
     public partial class MainForm : Form
@@ -15,6 +19,8 @@ namespace MDI_Paint
         public static Color currentColor = Color.Black;
         public static Tool currentTool = Tool.Pen;
         public static int currentPenSize = 1;
+
+        private List<IPlugin> plugins = new List<IPlugin>();
         public MainForm()
         {
             InitializeComponent();
@@ -22,9 +28,32 @@ namespace MDI_Paint
 
         private void MainForm_Load(object sender, EventArgs e)
         {
+            var configPath = Path.Combine(Application.StartupPath, "plugins.config.json");
+            var pluginDir = Path.Combine(Application.StartupPath, "Plugins");
 
+            var config = PluginConfig.LoadOrCreatePluginConfig(configPath, pluginDir);
+            plugins = PluginConfig.LoadPlugins(pluginDir, config);
+            LoadPlugins();
         }
-        
+
+        private void LoadPlugins()
+        {
+            filtersToolStrip.DropDownItems.Clear();
+            foreach (var plugin in plugins)
+            {
+                
+                var item = new ToolStripMenuItem(plugin.Name);
+                item.Click += (s, e) =>
+                {
+                    var active = this.ActiveMdiChild as DocForm;
+                    active?.ApplyFilter(plugin);
+                };
+                filtersToolStrip.DropDownItems.Add(item);
+            }
+            
+        }
+
+
         private void оПрограммеToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var formAbout = new AboutBox1();
@@ -125,7 +154,14 @@ namespace MDI_Paint
         private void рисунокToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
         {
                 размерХолстаToolStripMenuItem.Enabled = !(ActiveMdiChild == null);
-            
+
+        }
+        private void filtersToolStrip_DropDownOpened(object sender, EventArgs e)
+        {
+            foreach (ToolStripDropDownItem item in filtersToolStrip.DropDownItems)
+            {
+                item.Enabled = !(ActiveMdiChild == null);
+            }
         }
 
         private void brushButton_Click(object sender, EventArgs e)
@@ -267,5 +303,23 @@ namespace MDI_Paint
         {
             currentTool = Tool.Text;
         }
+
+        private void плагиныToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var configPath = Path.Combine(Application.StartupPath, "plugins.config.json");
+            var pluginDir = Path.Combine(Application.StartupPath, "Plugins");
+
+            var config = PluginConfig.LoadOrCreatePluginConfig(configPath, pluginDir);
+            var form = new PluginManagerForm(config);
+            DialogResult dR = form.ShowDialog();
+            if (dR == DialogResult.OK)
+            {
+                var updatedConfig = PluginConfig.LoadOrCreatePluginConfig(configPath, pluginDir);
+                plugins = PluginConfig.LoadPlugins(pluginDir, updatedConfig);
+                LoadPlugins();
+            }
+        }
+
+        
     }
 }
