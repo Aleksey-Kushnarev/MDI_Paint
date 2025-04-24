@@ -11,6 +11,7 @@ using System.Windows.Forms;
 
 using System.Reflection;
 using System.IO;
+using System.Threading;
 
 namespace MDI_Paint
 {
@@ -41,17 +42,55 @@ namespace MDI_Paint
             filtersToolStrip.DropDownItems.Clear();
             foreach (var plugin in plugins)
             {
-                
                 var item = new ToolStripMenuItem(plugin.Name);
-                item.Click += (s, e) =>
-                {
-                    var active = this.ActiveMdiChild as DocForm;
-                    active?.ApplyFilter(plugin);
-                };
+                item.Click += (s, e) => RunPluginAsync(plugin);
                 filtersToolStrip.DropDownItems.Add(item);
             }
-            
         }
+
+        private async void RunPluginAsync(IPlugin plugin)
+        {
+            var active = this.ActiveMdiChild as DocForm;
+            if (active == null) return;
+
+            using (var cts = new CancellationTokenSource())
+            {
+                // Создание окна прогресса перед запуском фильтра
+                var progressForm = new ProgressForm(cts);
+                progressForm.Show();
+
+                // Прогресс-бар, который обновляется в ApplyFilterAsync
+                var progress = new Progress<int>(percent =>
+                {
+                    progressForm.UpdateProgress(percent);
+                });
+
+                try
+                {
+                    // Применение фильтра
+                    await active.ApplyFilterAsync(plugin, progress, cts.Token);
+
+                    // Закрытие окна прогресса
+                    progressForm.Close();
+                    MessageBox.Show($"Фильтр '{plugin.Name}' применён успешно.", "Готово", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Закрытие окна прогресса при отмене
+                    progressForm.Close();
+                    MessageBox.Show($"Фильтр '{plugin.Name}' был отменён.", "Отмена", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                catch (Exception ex)
+                {
+                    // Закрытие окна прогресса при ошибке
+                    progressForm.Close();
+                    MessageBox.Show($"Ошибка при применении фильтра: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+
+
 
 
         private void оПрограммеToolStripMenuItem_Click(object sender, EventArgs e)

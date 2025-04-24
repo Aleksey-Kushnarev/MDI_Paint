@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
@@ -27,6 +28,9 @@ namespace MDI_Paint
         public bool isModified = false;
         public bool isFilled = false;
 
+        private CancellationTokenSource cancellationTokenSource;
+        private ProgressBar progressBar;
+
 
         public DocForm()
         {
@@ -34,6 +38,19 @@ namespace MDI_Paint
             bitmap = new Bitmap(ClientSize.Width, ClientSize.Height);
             originalBitmap = (Bitmap)bitmap.Clone();
             InitializeComponent();
+            InitializeProgressBar();
+        }
+
+        private void InitializeProgressBar()
+        {
+            progressBar = new ProgressBar
+            {
+                Style = ProgressBarStyle.Continuous,
+                Dock = DockStyle.Bottom,
+                Height = 20,
+                Visible = false
+            };
+            Controls.Add(progressBar);
         }
 
         private void DocForm_MouseDown(object sender, MouseEventArgs e)
@@ -272,14 +289,48 @@ namespace MDI_Paint
             }
         }
 
-        public void ApplyFilter(IPlugin plugin)
+        public async Task ApplyFilterAsync(IPlugin plugin, IProgress<int> progress, CancellationToken token)
         {
             if (bitmap == null || plugin == null) return;
 
-            plugin.Apply(bitmap);   // Изменяет изображение
-            Invalidate();           // Обновляем отображение
-            isModified = true;
-            Refresh();
+            try
+            {
+                // Создаем копию изображения для работы с ней
+                Bitmap processingBitmap = (Bitmap)bitmap.Clone();
+
+                // Запуск фильтра в фоновом потоке
+                await Task.Run(() =>
+                {
+                    // Применяем плагин (фильтр) к копии изображения
+                    plugin.Apply(processingBitmap, progress, token);
+                });
+
+                // Если фильтрация прошла успешно, обновляем картинку
+                // Убедимся, что предыдущий bitmap был правильно освобожден
+                bitmap?.Dispose();
+
+                // Обновляем bitmap после обработки
+                bitmap = processingBitmap;
+
+                // Оповещаем форму об изменении изображения
+                Invalidate();
+
+                // Устанавливаем флаг, что изображение было изменено
+                isModified = true;
+            }
+            catch (Exception ex)
+            {
+                // Логируем ошибку в случае, если что-то пошло не так
+                MessageBox.Show($"Ошибка при применении фильтра: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+
+
+        public void CancelFilter()
+        {
+            cancellationTokenSource?.Cancel();
         }
 
         private void FillArea(Point point, Color newColor)
